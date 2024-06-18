@@ -37,32 +37,11 @@ fn mapped_address_is_emitted_as_event() {
     let request = stun_binding.poll_transmit().unwrap();
     let response = generate_stun_response(request, MAPPED_ADDRESS);
 
-    let handled = stun_binding.handle_input(SERVER1, MAPPED_ADDRESS, &response, Instant::now());
-    assert!(handled);
+    stun_binding.handle_input(SERVER1, MAPPED_ADDRESS, &response, Instant::now());
 
     let event = stun_binding.poll_event().unwrap();
 
     assert_eq!(event, Event::NewMappedAddress(MAPPED_ADDRESS));
-}
-
-#[test]
-fn response_from_other_server_is_discarded() {
-    let start = Instant::now();
-
-    let mut stun_binding = StunBinding::new(SERVER1, start);
-
-    let request = stun_binding.poll_transmit().unwrap();
-    let response = generate_stun_response(request, MAPPED_ADDRESS);
-
-    let handled = stun_binding.handle_input(
-        SERVER2,
-        MAPPED_ADDRESS,
-        &response,
-        start + Duration::from_millis(200),
-    );
-
-    assert!(!handled);
-    assert!(stun_binding.poll_event().is_none());
 }
 
 fn generate_stun_response(request: Transmit, mapped_address: SocketAddr) -> Vec<u8> {

@@ -2,10 +2,7 @@ mod stun_binding;
 
 use bytecodec::{DecodeExt as _, EncodeExt as _};
 use std::net::SocketAddr;
-use stun_codec::{
-    rfc5389::{methods::BINDING, Attribute},
-    DecodedMessage, Message, TransactionId,
-};
+use stun_codec::{rfc5389::Attribute, DecodedMessage, Message};
 
 pub use stun_binding::StunBinding;
 

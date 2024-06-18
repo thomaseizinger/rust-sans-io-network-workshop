@@ -20,24 +20,21 @@ impl StunBinding {
         local: SocketAddr,
         packet: &[u8],
         now: Instant,
-    ) -> bool {
-        todo!()
+    ) {
     }
 
-    pub fn handle_timeout(&mut self, now: Instant) {
-        todo!()
-    }
+    pub fn handle_timeout(&mut self, now: Instant) {}
 
     pub fn poll_event(&mut self) -> Option<Event> {
-        todo!()
+        None
     }
 
     pub fn poll_timeout(&mut self) -> Option<Instant> {
-        todo!()
+        None
     }
 
     pub fn poll_transmit(&mut self) -> Option<Transmit> {
-        todo!()
+        None
     }
 }
 
