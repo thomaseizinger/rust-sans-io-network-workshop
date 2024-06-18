@@ -6,17 +6,22 @@ use std::{
     time::Instant,
 };
 
-const STUN1_L_GOOGLE_COM: SocketAddr =
-    SocketAddr::new(IpAddr::V4(Ipv4Addr::new(172, 217, 192, 127)), 3478);
+const FIREZONE_STUN_SERVER: SocketAddr =
+    SocketAddr::new(IpAddr::V4(Ipv4Addr::new(35, 221, 210, 210)), 3478);
 
 fn main() -> Result<()> {
     let socket = UdpSocket::bind("0.0.0.0:0")?;
     let local = socket.local_addr()?;
-    let mut stun_binding = StunBinding::new(STUN1_L_GOOGLE_COM, Instant::now());
+    let mut stun_binding = StunBinding::new(FIREZONE_STUN_SERVER, Instant::now());
 
     let mut buf = [0u8; 1000];
 
     loop {
+        if let Some(transmit) = stun_binding.poll_transmit() {
+            socket.send_to(&transmit.payload, transmit.dst)?;
+            continue;
+        }
+
         let read_timeout = stun_binding.poll_timeout().map(|i| i - Instant::now());
         socket.set_read_timeout(read_timeout)?;
 
@@ -37,7 +42,8 @@ fn main() -> Result<()> {
         stun_binding.handle_input(from, local, &buf[..num_bytes], Instant::now());
 
         if let Some(Event::NewMappedAddress(addr)) = stun_binding.poll_event() {
-            println!("New mapped address: {addr}")
+            println!("Our public address is: {addr}");
+            return Ok(());
         }
     }
 }

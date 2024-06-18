@@ -6,6 +6,7 @@ use stun_codec::{rfc5389::Attribute, DecodedMessage, Message};
 
 pub use stun_binding::StunBinding;
 
+#[derive(Debug)]
 pub struct Transmit {
     pub dst: SocketAddr,
     pub payload: Vec<u8>,
